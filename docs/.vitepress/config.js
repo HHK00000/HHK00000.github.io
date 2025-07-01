@@ -1,4 +1,5 @@
 export default {
+  base:'/blog/HHK00000.github.io/',
   title: '个人博客',// 网站标题
   ignoreDeadLinks: true,// 最好加上，构建时会忽略md中的外链
   appearance: false,//可以选择深浅主题
