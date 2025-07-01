@@ -1,0 +1,163 @@
+# vue2学习笔记
+
+## 库 和 框架
+- 库：开发者主动调用库中的方法
+- 框架：开发者将代码写在指定位置，框架本身调用逻辑
+
+## MVC 和 MVVM
+- modle view controller 视图 -> 控制器(controller/路由) -> model
+- 前后端分离：前端部分 MVC / MVVM （双向绑定：视图和数据交互，自动映射，不用手动更改dom）
+
+## vue没有完全遵循mvvm模式，但是受到了mvvm模式的启发
+- mvvm：view层 和 model层 不能通信，必须通过view-model; 且不能跳过数据去更新视图; 而vue可以直接不通过view-model来操作视图（ref）
+- react：只做了V层（视图层）
+
+## vue 渐进式框架
+vue的响应式原理 + vue的组件化功能 + vue-router + vuex + vue-cli
+
+## vue 的两种模式
+- full with compiler：带编译功能 使用模板渲染 把模板编译成render函数 
+- runtime-only：直接使用render函数
+- 渲染采用渲染模板的顺序：
+  - 默认会先查找用户传入的render函数，并优先使用 (在runtime-only模式下，只能使用render函数)
+  - 如果没有render函数，查找template，把template编译成render函数
+  - 如果没有传入render和template，会把el对应的元素编译成render函数
+  - new Vue时传入el属性效果等价于调用mount方法传入el进行挂载
+- 渲染到页面上的位置
+  - 传入el时，把模板内容渲染到el对应的dom上
+  - 没传入el时，会在调用$mount时进行渲染，并采用$mount传入的el参数作为模板渲染的位置
+
+## 虚拟dom和ast语法树
+虚拟dom是用对象来描述节点的 ast树不限于描述dom元素 还可以描述js等语法
+
+## 模板编译
+
+- 先通过模板解析，生成ast语法树
+- 对ast语法树进行静态节点优化（遍历整棵树，把不可变的节点标识上，减少dom diff时的比对，比如不带变量的纯文本节点等）
+- 通过ast语法树生成字符串代码，即_c、_v、_s等代码(_c元素节点 _v文本节点 _s模板文字)
+- 把字符串代码转为render函数，通过with语法 和 new Function结合，把字符串代码转为渲染函数
+
+## 实例挂载
+- 执行render函数，生成虚拟dom
+- 执行update函数，把虚拟dom渲染成真实dom，并插入到页面中
+
+## Vue的初渲染流程
+- 1.加载源码，初始化Vue构造函数，扩展原型方法
+- 2.new Vue创建实例
+- 3.初始化阶段，初始化事件、生命周期（组件的渲染、更新、挂载等），最后触发 beforeCreate 钩子
+- 4.初始化依赖注入、数据响应式（涉及响应式原理），最后触发 created 钩子
+- 4.挂载阶段，将模板编译成ast语法树
+- 5.把ast语法树转为render函数，最后触发 beforeMount 钩子
+- 6.执行render函数，生成虚拟dom
+- 7.执行update函数，生成真实dom，然后把真实dom渲染到页面上，最后触发 mounted 钩子
+
+
+## 响应式
+- new实例时传入的data属性，先判断是否是函数，是函数则获取其返回值，不是函数则直接返回，赋值给一个变量data，并把实例的_data属性指向这个变量；
+- 然后对实例的属性做一层属性代理，访问vm.name实际就是访问vm._data.name
+- 然后对属性进行劫持，先过滤基本数据类型和已劫持过的属性(__ob__属性为true表示已劫持过)
+- 然后new Observer生成属性的实例，并添加__ob__属性，
+- 再判断观测的数据是否为数组，是数组则采用切片编程的方式，修改数组原型上的7个方法；不是数组则对数据递归进行劫持，把这些数据都添加到vm._data上；
+- 使用defineProperty进行属性劫持，每个属性初始化一个dep类，并在get中进行依赖收集，set中进行依赖更新
+
+
+## 依赖收集与依赖更新
+- vue更新策略是以组件为单位的，给每个组件都增加一个watcher，属性变化后会重新调用这个watcher （这个watcher称为渲染watcher）;
+- 一个属性有一个dep，dep与watcher二者是多对多的关系；dep可以收集多个watcher(如渲染watcher及自定义watcher -- vm.$watch(name))，watcher也可以收集多个dep；Dep是Watcher和Observe之间的桥梁;
+- 当页面取值时，说明这个值用来渲染了，此时把渲染watcher存到全局上，即Dep类的target上；取值会触发get方法，在get方法中把watcher实例存入之前初始化的dep实例中，并把这个dep实例也存入watcher实例中；
+- 当后续更改属性值时，会触发set方法，此时会遍历dep类中是否存有watcher，若有，则进行页面更新；
+- new Observer时，observe方法返回的ob实例要保存起来，触发get时，如果ob存在（值为非基本类型，则该属性对应的ob存在），则拿到ob对应的dep实例，并收集依赖（dep存watcher、watcher存dep，通过dep建立ob与watcher的联系），这样有两个用处：1.用于数组的依赖更新，当触发数组的7个方法时，拿到ob上的dep，进行依赖更新；2.当使用$set对一个对象新增key时，这时这个ob就是对象对应的ob，可以通过这个ob对应的dep联系到watcher，从而更新视图；
+
+## nextTick的理解
+两个核心：异步、批处理
+- vue2的异步采用了兼容处理方案，先使用Promise，若不支持，则使用MutationObserver,还不支持，再考虑使用setImmediate，都不支持，最后使用setTimeout；vue3中的nextTick是直接使用Promise实现的，没有做兼容处理；
+- 批处理：维护一个队列，完成批处理。同步代码中，1.页面nextTick把所有要更新的watcher存到队列中，再异步去执行，由于清空队列是异步代码，所以在这轮宏任务中，所有要更新的watcher都会存到队列中，这样才能批处理；2.同理，用户调用的$nextTick也会被存入队列中，异步去清空队列；批处理是队列和异步相结合实现的；
+
+## watch
+watcher分为渲染watcher和用户watcher
+渲染watcher是执行页面更新的Watcher实例，核心是vm._update(vm._render())
+用户watcher是用户设置的watch方法中生成的watcher实例，只有这个数据被vue劫持过，才能设置用户watcher；因为用户watcher的原理是在new Watch时，触发数据的get方法，从而进行依赖收集，而只有被劫持过的数据才能触发在触发get方法时进行依赖收集，且该数据在创建用户watcher触发get时，dep实例已经生成（dep实例是初始化数据时生成的），也就是说，用户watcher的dep实例和属性原来的dep实例是同一个，只是这个dep实例增加了对新的watcher的依赖收集；这样当值改变触发set时，所有watcher实例都可以更新；
+用户watcher：通过获取vm实例上属性来触发get方法，从而进行添加依赖，并在触发set时进行依赖更新；在watcher内部保存了属性变化前后的值，并传给监听回调。
+
+
+## Vue的异步更新流程
+- 0.vue初始化阶段，完成了：初始化数据、生成dep实例、模板编译、生成render函数、生成update函数、生成渲染watcher、进行依赖收集等工作；
+- 1.对于用户watcher，依赖收集是在初始化时拿到传入的watch属性上的数据；然后new Watch创建实例，并通过获取实例上的属性，触发ob的get方法，从而把该属性的dep实例与用户watcher做关联，即相互添加依赖；
+- 2.当数据变化时，触发了属性ob的set方法，该set方法是在初始化数据时设置的
+- 3.ob中的set中会调用ob对应的dep实例上的notify方法
+- 4.dep实例上的notify方法会调用依赖收集到的所有watcher实例上的update方法
+- 5.此时的watcher实例分为两种，一种是渲染watcher，一种是用户watcher
+- 6.wathcer实例上的update方法会去异步更新watcher队列
+- 7.每轮页面更新会把所有要更新的watcher存入队列中，通过nextTick去异步更新
+- 8.nextTick也会去维护一个nextTick的队列，存放页面nextTick和用户nextTick，异步去刷新所有nextTick
+- 9.vue2中nextTick的异步实现方案做了兼容，依次使用Promise、MutationObserver、setImmediate、setTimout，vue3直接使用Promise
+- 10.清空watcher队列时，最终调用更新函数，即 vm._update(vm._render())，从而触发更新
+- 11.对于用户watcher，初始化实例时先存一下最初的属性值，然后第一次触发update方法，此时获取更新后的值，把新值和老值传给监听函数
+- 12.用户watcher第一轮update结束后，属性值发生改变，触发set方法，如果该属性在模板中用到，那么还会触发第二轮update，也就是渲染watcher的更新
+
+## dom-diff
+
+- 1.在更新函数_update中，会把每次最新的虚拟DOM都挂到vm._vnode上，
+- 2.第一次执行更新函数时，vm._vnode为空，则使用vm.$el作为老节点，并把生成的虚拟dom存到vm._vnode上；以后每次更新都用上一次存储的vm._vnode作为老节点
+- 3.当老节点为真实dom节点时(代表第一次执行更新函数 初渲染)，直接用新的虚拟节点生成真实dom，并替换老节点
+- 4.当新老节点都是虚拟dom时，要进行diff算法比对，采取的原则是：同级比较、深度优先；因为dom操作中引起层级改变的操作场景较少，且层级改变的对比很复杂，所以不考虑层级改变仍然是相同节点的场景；深度优先是一个深层递归的过程
+- 5.对于元素节点，先比较两个元素的标签名，标签名不同则直接视为不同节点，直接替换掉
+- 6.标签名相同时，先判断标签名都为空的场景，即都是文本标签的场景，此时直接用新节点的文本内容更新老节点的文本内容即可
+- 7.标签名一样时，直接复用老节点上的el属性（此时新节点没有创建成真实dom，自身是没有el属性的，这里直接把老节点的el属性拿过来，挂到新节点上，方便复用）
+- 8.更新节点属性，即虚拟dom对象的更新
+- 9.处理子元素，此时分为三种情况：老的有子元素新的也有子元素，这是dom-diff算法的核心；老的有子元素新的没有子元素，直接把新的el的innerHTML设置为空，新的有子元素老的没有子元素，遍历新的子元素，逐个生成真实dom并添加到el中
+- 10.对于新老虚拟dom都有子元素的场景，生成一个子元素的虚拟dom的key和子元素index的映射表，并用双指针的方式标记新老子元素头尾节点位置；然后根据标签名是否相同、key是否相同来检测两个子元素是否为同一个节点；是同一个节点则复用并继续深度递归两个节点的属性、子元素等；不是同一个节点则不能复用
+- 11.双指针的检测分为几种情况：头头比较、尾尾比较、头尾比较、尾头比较；这四种比较算是一种优化处理，可以快速复用节点；
+- 12.如果以上几种比较都不是相同节点，则会用新节点的头结点的key去映射表中找是否有相同key的老节点，找到则复用这个老节点，并把这个老节点前移，找不到则通过creatElm新增一个节点并插入老的起始节点前面
+- 13.老节点前移以后，为防止数组塌陷，不去改变数组长度，而原位置会变为null，所以双指针遍历时，遇到null节点要自动跳过
+- 14.当新的子节点或老的子节点的头结点index大于尾节点index时，循环结束，此时要把老节点双指针中间开始节点到结束节点之间的元素都清空
+- 15.patch算法处理过程中，对老节点的el进行了处理，此时就会改变dom，更新页面；同时也可以把老节点放入文档碎片，处理完成以后再赋给vm.$el放入页面中，更新页面。
+
+## computed
+
+- 计算属性也是一个watcher，初始化计算属性时，会生成一个计算属性watcher，但不会立即触发该watcher实例的getter；
+- 初始化计算属性时，会对计算属性进行劫持，使其变为响应式；
+- 当在script中取值时，会触发get，把会对依赖项进行取值，这时计算属性的依赖项会把计算属性watcher添加到依赖中；
+- 同时，当页面中对计算属性进行取值时，也会触发计算属性的getter，此时会先把渲染watcher存入栈中，再把计算属性watcher存入栈中，计算属性的依赖项会依次对计算属性watcher和渲染watcher添加依赖；
+- 当计算属性的依赖项改变时，会触发其set，然后进行依赖更新，依次更新计算属性的值和进行页面更新渲染。
+
+## vue组件化的好处
+- 可复用，不用重写结构，只需传入不同数据，即可复用组件；
+- 方便维护，公共部分统一维护管理；
+- 局部更新，减少渲染操作（每个组件有一个单独的watcher，哪个组件变化，就只更新哪个组件，减少dom-diff比对）；
+
+## 组件
+- vue初始化时，会把全局components和自身components合并，并初始化全局API：初始化Vue.extend方法 和 Vue.component方法 以待使用；
+- vue在初渲染时，调用父组件的$mount进行渲染；
+- 父组件生成虚拟dom时（_render方法执行），如遇到组件标签，判断该标签不属于原生标签，则会以固定格式（如：vue-component-1-card）创建出组件的虚拟dom，并且初始化组件的生命周期，给组件的vnode增加init等方法；此时父组件生命周期依次触发了beforeCreate、created、beforeMount；
+- 当父组件生成真实dom时（_update方法执行），如果该虚拟dom对应的是一个组件（不是原生标签），则会拿到这个组件的构造函数，将其实例化，然后用子组件的vm实例调用去$mount生成真实dom；
+- 子组件的vm实例触发的$mount中，然后调用之前组件虚拟dom中的init方法，调用子组件的$mount方法，生成子组件的watcher实例，并触发其_render和_update方法，把子组件的template编译成render函数，并生成真实dom并存到子组件实例vm.$el中，然后替换组件标签；此时子组件生命周期依次触发了beforeCreate、created、beforeMount、mounted；
+- 子组件渲染完毕后，把真实dom挂到父组件的vnode.$el上，父组件继续渲染，直到父组件全部渲染完毕，触发父组件的mounted；
+
+## vue2的主要类和实例
+|类|实例|
+|-|-|
+|Vue|vm|
+|Observer|ob|
+|Dep|dep|
+|Watcher|watcher|
+
+## vue-router
++ 两种路由模式：hash、history。
+  + hash模式通过onhashchange事件来监听url中hash的变化，不会向服务器发送请求；
+  + history模式通过onpopstate事件来监听文档历史记录的变化及浏览器前进后退，同时使用History API（history.pushState、history.replaceState）来管理路由状态，history模式需要后端服务器配置重定向，来确保在刷新或直接访问带有路由信息的URL时不会出现404错误、
+  + 调用pushState()或者replaceState()方法都会改变当前的历史记录，但仅仅调用pushState()方法或replaceState()方法 ，并不会触发popstate事件，另外一个条件是用户必须点击浏览器的倒退按钮或者前进按钮，或者使用js调用history.back()或者history.forward()等方法
+  + popstate事件触发的条件：1.处在同一个文档/html页面 2.文档的浏览历史(即history对象)发生变化
++ MPA多页应用中，跳转逻辑都是后端处理；SPA中，路由跳转由前端完成。
++ 插件一般是用于定义全局组件、全局指令、过滤器、原型方法等。Vue-Router实际上是一个插件，Vue构造函数通过Vue.use安装插件，这个过程实际就是往Vue构造函数的全局上挂载属性方法（定义router-link组件、router-view组件；向原型上添加$router、$route属性）。
++ vue-router实现流程：
+  + 1.new VueRouter实例时，执行install逻辑，扩展Vue原型;
+  + 2.通过Vue.mixin把VueRouter的实例挂在根组件的this._router上，并把根组件实例，挂在this._routerRoot上，这样所有vue组件都可以通过_routerRoot访问到根组件及根组件上的router实例;同时，vue实例的$router通过defineProperty指向_router属性，这样$router属性也是响应式的了；
+  + 3.生成路由实例时，a.创建一个匹配器this.matcher，存储路由的路径和组件之间的关系，并有两个方法：match通过路由来匹配组件、addRoutes动态添加匹配规则;
+  + 4.生成路由实例时，b.创建一个history，根据用户选择的模式（HashHitory/HTML5History），同时在history类及history的基类上，初始化三个方法：setupListener设置路由变化的监听器、getCurrentLocation获取当前路由、transitionTo跳转到对应的路由；
+  + 5.生成路由实例时，c.在history实例上生成一个this.current属性，每次路由切换时，都更新这个属性，实现路由切换时，current属性响应式变化；并在install时，mixin混入时，通过Vue.util.defineReactive把current属性定义在vue实例的_route属性上，然后再把_route属性定义在vue实例的$route属性上，这样$route属性也是响应式的了；
+  + 5.当路由实例初始化时(init方法触发),进行一次跳转，并监听hash/history的变化，当hash/history变化时，再进行相应跳转;每次路由改变，都会响应式的更改$route、$router属性，来实现路由数据的响应式变化；
+  + 6.router-link和router-view两个标签，则是通过Vue.component来定义实现的；
+
+  ## vuex
+
