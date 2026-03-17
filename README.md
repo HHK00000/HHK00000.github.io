@@ -13,7 +13,7 @@ npm run build
 ## 本地开发
 npm run dev
 
-## 服务器上替换
+## 替换静态资源路径
 node repleace.js 替换html中的静态资源路径
 
 ## 发布
