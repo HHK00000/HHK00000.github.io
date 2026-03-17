@@ -59,11 +59,9 @@ async function processHtmlFile(filePath, searchPattern, replacement) {
   const targetDir = './docs/.vitepress/dist'; // 替换为你的目录路径
   let searchPattern = '/assets'; // 替换为你要匹配的模式
   let replacement = '/blog/HHK00000.github.io/assets'; // 替换为你要替换的内容
-  // let replacement = '/blog/assets'; // 替换为你要替换的内容
   await replaceInHtmlFiles(targetDir, searchPattern, replacement);
   searchPattern = '/document'; // 替换为你要匹配的模式
   replacement = '/blog/HHK00000.github.io/document'; // 替换为你要替换的内容
-  // replacement = '/blog/document'; // 替换为你要替换的内容
   await replaceInHtmlFiles(targetDir, searchPattern, replacement);
   
 })();
