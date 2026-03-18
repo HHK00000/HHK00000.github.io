@@ -14,6 +14,9 @@ export default {
       {
         text: '技术文档',
         items: [
+          { text: 'Html常见概念', link: '/document/HtmlBasic' },
+            { text: 'Html标签', link: '/document/HtmlTag' },
+            { text: 'Html5新特性', link: '/document/Html5' },
           { text: 'Html', items: [
             { text: 'Html常见概念', link: '/document/Html/HtmlBasic' },
             { text: 'Html标签', link: '/document/Html/HtmlTag' },
