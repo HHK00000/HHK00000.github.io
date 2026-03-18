@@ -1,0 +1,1 @@
+import{_ as s,c as a,o as p,ae as e}from"./chunks/framework.BMBYWaLh.js";const g=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"document/ES6.md","filePath":"document/ES6.md"}'),l={name:"document/ES6.md"};function i(t,n,c,r,o,y){return p(),a("div",null,n[0]||(n[0]=[e("",61)]))}const f=s(l,[["render",i]]);export{g as __pageData,f as default};
