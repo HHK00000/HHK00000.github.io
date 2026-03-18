@@ -66,8 +66,8 @@ async function processHtmlFile(filePath, searchPattern, replacement) {
   searchPattern = '/vp-icons.css'; // 替换为你要匹配的模式
   replacement = '/blog/HHK00000.github.io/vp-icons.css'; // 替换为你要替换的内容
   await replaceInHtmlFiles(targetDir, searchPattern, replacement);
-  searchPattern = '/hashmap.json'; // 替换为你要匹配的模式
-  replacement = '/blog/HHK00000.github.io/hashmap.json'; // 替换为你要替换的内容
+  searchPattern = 'hashmap.json'; // 替换为你要匹配的模式
+  replacement = 'blog/HHK00000.github.io/hashmap.json'; // 替换为你要替换的内容
   await replaceInHtmlFiles(targetDir, searchPattern, replacement);
 
 })();
