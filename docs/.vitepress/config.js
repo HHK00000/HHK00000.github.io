@@ -17,59 +17,28 @@ export default {
           { text: 'Html常见概念', link: '/document/HtmlBasic' },
             { text: 'Html标签', link: '/document/HtmlTag' },
             { text: 'Html5新特性', link: '/document/Html5' },
-          { text: 'Html', items: [
-            { text: 'Html常见概念', link: '/document/Html/HtmlBasic' },
-            { text: 'Html标签', link: '/document/Html/HtmlTag' },
-            { text: 'Html5新特性', link: '/document/Html/Html5' },
-          ] },
-          { text: 'Css', items: [
-            { text: 'Css核心', link: '/document/Css/CssCore' },
-            { text: 'Css实用功能', link: '/document/Css/CssCase' },
-          ] },
-          { text: 'JavaScript', items: [
-            { text: '数据类型和运算符', link: '/document/JavaScript/datatype' },
-            { text: '闭包&作用域', link: '/document/JavaScript/closure' },
-            { text: '面向对象&类&原型', link: '/document/JavaScript/oop' },
-            { text: 'ES6相关', link: '/document/JavaScript/ES6' },
-            { text: '事件循环', link: '/document/JavaScript/eventloop' },
-            { text: 'WEB API', link: '/document/JavaScript/WEBAPI' },
-          ] },
-          { text: 'Browser', items: [
-            { text: '浏览器相关前端知识', link: '/document/Browser/Browser' },
-          ] },
-          { text: 'Vue', items: [
-            { text: 'vue2源码笔记', link: '/document/Vue/vue2' },
-          ] },
-          { text: 'Network', items: [
-            { text: 'AJAX及跨域', link: '/document/Network/AJAX' },
-          ] },
-          { text: 'dataAlg', items: [
-            { text: '数据结构', link: '/document/dataAlg/dataStructures' },
-            { text: '常见算法之排序算法', link: '/document/dataAlg/sortAlgorithm' },
-            { text: '常见算法之搜索算法', link: '/document/dataAlg/searchAlgorithm' },
-            { text: '算法设计与技巧', link: '/document/dataAlg/AlgorithmDesign' },
-          ] },
-          { text: 'DesignMode', items: [
-            { text: '常见设计模式', link: '/document/DesignMode/DesignMode' },
-          ] },
-          { text: 'PerformanceMonitoring', items: [
-            { text: '埋点和性能监控', link: '/document/PerformanceMonitoring/PerformanceMonitoring' },
-          ] },
-          { text: 'Canvas', items: [
-            { text: 'canvas', link: '/document/Canvas/canvas' },
-          ] },
-          { text: 'UnitTest', items: [
-            { text: '单元测试', link: '/document/UnitTest/UnitTest' },
-          ] },
-          { text: 'MicroFrontend', items: [
-            { text: '微前端', link: '/document/MicroFrontend/MicroFrontend' },
-          ] },
-          { text: 'Linux', items: [
-            { text: 'Linux', link: '/document/Linux/Linux' },
-          ] },
-          { text: 'PHP', items: [
-            { text: 'PHP', link: '/document/PHP/PHP' },
-          ] },
+            { text: 'Css核心', link: '/document/CssCore' },
+            { text: 'Css实用功能', link: '/document/CssCase' },
+            { text: '数据类型和运算符', link: '/document/datatype' },
+            { text: '闭包&作用域', link: '/document/closure' },
+            { text: '面向对象&类&原型', link: '/document/oop' },
+            { text: 'ES6相关', link: '/document/ES6' },
+            { text: '事件循环', link: '/document/eventloop' },
+            { text: 'WEB API', link: '/document/WEBAPI' },
+            { text: '浏览器相关前端知识', link: '/document/Browser' },
+            { text: 'vue2源码笔记', link: '/document/vue2' },
+            { text: 'AJAX及跨域', link: '/document/AJAX' },
+            { text: '数据结构', link: '/document/dataStructures' },
+            { text: '常见算法之排序算法', link: '/document/sortAlgorithm' },
+            { text: '常见算法之搜索算法', link: '/document/searchAlgorithm' },
+            { text: '算法设计与技巧', link: '/document/AlgorithmDesign' },
+            { text: '常见设计模式', link: '/document/DesignMode' },
+            { text: '埋点和性能监控', link: '/document/PerformanceMonitoring' },
+            { text: 'canvas', link: '/document/canvas' },
+            { text: '单元测试', link: '/document/UnitTest' },
+            { text: '微前端', link: '/document/MicroFrontend' },
+            { text: 'Linux', link: '/document/Linux' },
+            { text: 'PHP', link: '/document/PHP' },
         ]
       }
     ],
