@@ -11,11 +11,11 @@ async function replaceInHtmlFiles(dirPath, searchPattern, replacement) {
   try {
     // 读取目录内容
     const entries = await fs.readdir(dirPath, { withFileTypes: true });
-    
+
     // 遍历目录中的每个条目
     for (const entry of entries) {
       const entryPath = path.join(dirPath, entry.name);
-      
+
       if (entry.isDirectory()) {
         // 递归处理子目录
         await replaceInHtmlFiles(entryPath, searchPattern, replacement);
@@ -24,7 +24,7 @@ async function replaceInHtmlFiles(dirPath, searchPattern, replacement) {
         await processHtmlFile(entryPath, searchPattern, replacement);
       }
     }
-    
+
     console.log('✅ 所有 HTML 文件处理完成');
   } catch (err) {
     console.error('❌ 处理过程中出错:', err);
@@ -38,10 +38,10 @@ async function processHtmlFile(filePath, searchPattern, replacement) {
   try {
     // 读取文件内容
     const content = await fs.readFile(filePath, 'utf8');
-    
+
     // 替换内容
     const newContent = content.replaceAll(searchPattern, replacement);
-    
+
     // 如果内容有变化，则写回文件
     if (newContent !== content) {
       await fs.writeFile(filePath, newContent, 'utf8');
@@ -63,5 +63,11 @@ async function processHtmlFile(filePath, searchPattern, replacement) {
   searchPattern = '/document'; // 替换为你要匹配的模式
   replacement = '/blog/HHK00000.github.io/document'; // 替换为你要替换的内容
   await replaceInHtmlFiles(targetDir, searchPattern, replacement);
-  
+  searchPattern = '/vp-icons.css'; // 替换为你要匹配的模式
+  replacement = '/blog/HHK00000.github.io/vp-icons.css'; // 替换为你要替换的内容
+  await replaceInHtmlFiles(targetDir, searchPattern, replacement);
+  searchPattern = '/hashmap.json'; // 替换为你要匹配的模式
+  replacement = '/blog/HHK00000.github.io/hashmap.json'; // 替换为你要替换的内容
+  await replaceInHtmlFiles(targetDir, searchPattern, replacement);
+
 })();
