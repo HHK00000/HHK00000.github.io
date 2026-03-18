@@ -2,6 +2,7 @@ export default {
   title: '个人博客',// 网站标题
   ignoreDeadLinks: true,// 最好加上，构建时会忽略md中的外链
   appearance: false,//可以选择深浅主题
+  base: "/blog/HHK00000.github.io/docs/.vitepress/dist/",
   // 主题配置
   themeConfig: {
     // nav: [//右侧导航
