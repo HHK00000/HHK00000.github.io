@@ -14,7 +14,7 @@ npm run build
 npm run dev
 
 ## 替换静态资源路径
-node repleace.js 替换html中的静态资源路径
+node repleace.js 替换html中的静态资源路径  -- 部署是不需要执行此命令
 
 ## 发布
 node publish.js 把编译文件拷贝到根目录
