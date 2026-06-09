@@ -45,7 +45,6 @@ export default {
             { text: '微前端', link: '/document/MicroFrontend' },
             { text: 'Linux', link: '/document/Linux' },
             { text: 'PHP', link: '/document/PHP' },
-            { text: '关于我', link: '/document/About' },
         ]
       }
     ],
