@@ -7,12 +7,12 @@ hero:
   text: 前端工程师 / 全栈爱好者 / 终身学习者
   tagline: 土木转码｜前360｜前中信银行｜8年一线开发
   image:
-    src: /avatar.png
-    alt: 头像
+    src: 
+    alt: 
   actions:
     - theme: brand
       text: 📚 进入博客
-      link: /blog/
+      link: /HtmlBasic/
     - theme: alt
       text: 💼 关于我
       link: /about/
@@ -46,9 +46,7 @@ features:
 ---
 
 ### ✨ 最近更新
-- [Vue3 响应式原理详解](/blog/vue3-reactivity)
-- [Webpack5 性能优化实战](/blog/webpack5-optimize)
-- [8年前端面试复盘（含真题）](/blog/frontend-interview)
+- [Vue3 响应式原理详解](/Vue3)
 
 ### 📌 个人标签
 **#前端工程化 #Vue #React #Node #性能优化 #面试 #转码成长**
