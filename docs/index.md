@@ -1,8 +1,54 @@
-# 个人介绍
-+ 北方汉子·河北
-+ 985本科·吉林大学
-+ 3年土木工程工作经验·前央企勘察设计院
-+ 8年前端开发经验
-+ 前360前端开发·卫士团队
-+ 前银行开发岗·中信子银行
-+ 合作加 WX：hanhuan_10010 QQ:813605140
+---
+layout: home
+title: 韩焕康 | 前端博客
+titleTemplate: 前端工程师 · 8年经验 · 技术分享
+hero:
+  name: 👋 你好，我是韩焕康
+  text: 前端工程师 / 全栈爱好者 / 终身学习者
+  tagline: 土木转码｜前360｜前中信银行｜8年一线开发
+  image:
+    src: /avatar.png
+    alt: 头像
+  actions:
+    - theme: brand
+      text: 📚 进入博客
+      link: /blog/
+    - theme: alt
+      text: 💼 关于我
+      link: /about/
+
+features:
+  - icon: ⚙️
+    title: 前端工程化
+    details: Webpack / Vite / 性能优化 / 架构设计
+  - icon: 🧩
+    title: 全栈开发
+    details: Vue / React / Node.js / 微前端
+  - icon: 📈
+    title: 成长笔记
+    details: 面试经验 / 踩坑记录 / 职业思考
+---
+
+<style>
+/* 全局微调，只作用于首页，不影响其他页面 */
+:root {
+  --vp-c-brand-1: #3b82f6;
+  --vp-c-brand-2: #60a5fa;
+  --vp-c-brand-3: #93c5fd;
+}
+.dark {
+  --vp-c-brand-1: #60a5fa;
+  --vp-c-brand-2: #93c5fd;
+  --vp-c-brand-3: #bfdbfe;
+}
+</style>
+
+---
+
+### ✨ 最近更新
+- [Vue3 响应式原理详解](/blog/vue3-reactivity)
+- [Webpack5 性能优化实战](/blog/webpack5-optimize)
+- [8年前端面试复盘（含真题）](/blog/frontend-interview)
+
+### 📌 个人标签
+**#前端工程化 #Vue #React #Node #性能优化 #面试 #转码成长**
